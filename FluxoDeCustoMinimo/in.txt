@@ -1,9 +1,24 @@
-8 32
-4 2
-15 2
-7 3
-9 4
-8 6
-10 5
-9 8
-11 7
+9 14
+F origem 10
+G origem 10
+H origem 10
+M transporte
+N transporte
+P destino 8
+Q destino 7
+R destino 6
+S destino 9
+F M 2 0 8
+F P 7 0 -1
+G M 5 0 7
+G H 2 0 -1
+H M 6 0 -1
+H N 5 0 9
+H S 4 0 6
+M P 1 0 17
+M Q 3 0 4
+M R 4 0 -1
+N S 3 0 -1
+P Q 1 0 10
+Q R 1 0 -1
+R N 2 0 -1
