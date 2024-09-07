@@ -28,7 +28,7 @@ unordered_map<int, int> fontes, destinos;     // Mapeia as fontes e destinos com
 unordered_set<int> intermediarios;            // Conjunto de vértices intermediários
 
 // Função que configura e resolve o modelo CPLEX
-void resolverCplex() {
+void cplex() {
     IloEnv ambiente;  // Ambiente CPLEX
 
     /*  --------------------------------------------------
@@ -48,75 +48,69 @@ void resolverCplex() {
      *  Modelo -----------------------------
      */
     IloModel modelo(ambiente);
-    IloExpr soma(ambiente), soma2(ambiente);
+    IloExpr sum(ambiente), sum2(ambiente);
 
     // Função objetivo: Minimizar o custo total de transporte
-    soma.clear();
+    sum.clear();
     for (auto vertice_origem : grafo) {
         for (auto vertice_destino : vertice_origem.second) {
-            soma += vertice_destino.second.custo * fluxo[vertice_origem.first][vertice_destino.first];
+            sum += vertice_destino.second.custo * fluxo[vertice_origem.first][vertice_destino.first];
         }
     }
-    modelo.add(IloMinimize(ambiente, soma));  // Adiciona a função objetivo ao modelo
+    modelo.add(IloMinimize(ambiente, sum));  // Adiciona a função objetivo ao modelo
 
-    // Restrições: Oferta nas fontes
+    // Restrições: Oferta
     for (auto fonte : fontes) {
-        soma.clear();
-        soma2.clear();
+        sum.clear();
+        sum2.clear();
 
-        // Soma dos fluxos saindo da fonte
         for (auto destino : grafo.find(fonte.first)->second) {
-            soma += fluxo[fonte.first][destino.first];
+            sum += fluxo[fonte.first][destino.first];
         }
 
-        // Soma dos fluxos chegando na fonte
         for (auto origem : grafo) {
             if (origem.second.find(fonte.first) != origem.second.end()) {
-                soma2 += fluxo[origem.first][fonte.first];
+                sum2 += fluxo[origem.first][fonte.first];
             }
         }
 
-        modelo.add(soma - soma2 <= fonte.second);  // Restrição de oferta
+        modelo.add(sum - sum2 <= fonte.second);
     }
 
-    // Restrições: Demanda nos destinos
+    // Restrições: Demanda
     for (auto destino : destinos) {
-        soma.clear();
-        soma2.clear();
+        sum.clear();
+        sum2.clear();
 
-        // Soma dos fluxos saindo do destino
         for (auto adjacente : grafo.find(destino.first)->second) {
-            soma += fluxo[destino.first][adjacente.first];
+            sum += fluxo[destino.first][adjacente.first];
         }
 
-        // Soma dos fluxos chegando no destino
         for (auto origem : grafo) {
             if (origem.second.find(destino.first) != origem.second.end()) {
-                soma2 += fluxo[origem.first][destino.first];
+                sum2 += fluxo[origem.first][destino.first];
             }
         }
 
-        modelo.add(soma - soma2 <= -destino.second);  // Restrição de demanda
+        modelo.add(sum - sum2 <= -destino.second);
     }
 
-    // Restrições: Conservação de fluxo nos intermediários
+    // Restrições: Conservação de fluxo
     for (int intermediario : intermediarios) {
-        soma.clear();
-        soma2.clear();
+        sum.clear();
+        sum2.clear();
 
-        // Soma dos fluxos saindo do intermediário
         for (auto destino : grafo.find(intermediario)->second) {
-            soma += fluxo[intermediario][destino.first];
+            sum += fluxo[intermediario][destino.first];
         }
 
-        // Soma dos fluxos chegando no intermediário
         for (auto origem : grafo) {
             if (origem.second.find(intermediario) != origem.second.end()) {
-                soma2 += fluxo[origem.first][intermediario];
+                sum2 += fluxo[origem.first][intermediario];
             }
         }
 
-        modelo.add(soma - soma2 == 0);  // Restrição de conservação de fluxo
+        modelo.add(sum - sum2 == 0);
     }
 
     // Restrições de capacidade nas arestas
@@ -183,8 +177,8 @@ void resolverCplex() {
     /*  -----------------------------------------
      *  Liberação de memória --------------------
      */
-    soma.end();
-    soma2.end();
+    sum.end();
+    sum2.end();
     modelo.end();
     ambiente.end();
 }
@@ -221,5 +215,5 @@ int main() {
     }
 
     // Executa o CPLEX
-    resolverCplex();
+    cplex();
 }
