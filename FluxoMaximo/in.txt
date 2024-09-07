@@ -1,9 +1,13 @@
-8 32
-4 2
-15 2
-7 3
-9 4
-8 6
-10 5
-9 8
-11 7
+6 9
+s origem 10
+t destino 10
+a intermediario
+b intermediario
+c intermediario
+d intermediario
+s a 0 10
+s b 0 5
+a c 0 10
+b d 0 5
+c t 0 5
+d t 0 10
