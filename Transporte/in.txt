@@ -1,9 +1,20 @@
-8 32
-4 2
-15 2
-7 3
-9 4
-8 6
-10 5
-9 8
-11 7
+7 12
+A origem 30
+B origem 50
+C origem 40
+D destino 20
+E destino 28
+F destino 25
+G destino 34
+A D 14 0 30
+A E 16 0 50
+A F 13 0 40
+A G 18 0 40
+B D 8 0 30
+B E 9 0 50
+B F 10 0 40
+B G 11 0 40
+C D 18 0 30
+C E 16 0 50
+C F 21 0 40
+C G 20 0 40
