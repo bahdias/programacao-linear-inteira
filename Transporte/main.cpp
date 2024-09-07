@@ -1,9 +1,10 @@
-/*---------------- File: main.cpp  ---------------------+
-|Modelo PLI - Mochila 01                                |
-|					      		                        |
-|					      		                        |
-| Implementado por Guilherme C. Pena em 28/08/2024      |
-+-------------------------------------------------------+ */
+/*--------------------- File: main.cpp  ----------------------+
+|Modelo PLI - Problema do Transporte                          |
+|					      		                              |
+|					      		                              |
+| Implementado por Bárbara Pereira Medeiros dias e            |
+|                    Julia Luiza Ferreira Santos              |
++-----------------------------------------------------------+ */
 
 #include <bits/stdc++.h>
 #include <ilcplex/ilocplex.h>
