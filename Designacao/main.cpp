@@ -2,8 +2,7 @@
 |Modelo PLI - Problema da Designação                          |
 |					      		                              |
 |					      		                              |
-| Implementado por Bárbara Pereira Medeiros dias e            |
-|                    Julia Luiza Ferreira Santos              |
+| Implementado por Bárbara Pereira Medeiros Dias              |
 +-----------------------------------------------------------+ */
 
 #include <bits/stdc++.h>

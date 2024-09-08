@@ -1,3 +1,10 @@
+/*--------------------- File: main.cpp  ----------------------+
+|Modelo PLI - Problema do Fluxo Máximo                        |
+|					      		                              |
+|					      		                              |
+| Implementado por Bárbara Pereira Medeiros Dias              |
++-----------------------------------------------------------+ */
+
 #include <bits/stdc++.h>
 #include <ilcplex/ilocplex.h>
 
@@ -132,9 +139,6 @@ int main() {
     // Lê o número de vértices e arestas
     cin >> num_vertices >> num_arestas;
 
-    // Verificação para garantir que os valores foram lidos corretamente
-    cout << "Num. vertices: " << num_vertices << ", Num. arestas: " << num_arestas << endl;
-
     // Lê os vértices (origens e destinos)
     string tipo_vertice;
     for (int i = 0; i < num_vertices; i++) {
@@ -146,14 +150,6 @@ int main() {
             cin >> fontes[i];  // Armazena a oferta de uma fonte
         } else if (tipo_vertice == "destino") {
             cin >> destinos[i];  // Armazena a demanda de um destino
-        }
-
-        // Verificação de cada vértice e seu tipo
-        cout << "Vértice " << rotulos_vertices[i] << ": " << tipo_vertice;
-        if (tipo_vertice == "origem") {
-            cout << ", oferta: " << fontes[i] << endl;
-        } else if (tipo_vertice == "destino") {
-            cout << ", demanda: " << destinos[i] << endl;
         }
     }
 
@@ -168,12 +164,6 @@ int main() {
 
         grafo[id_origem][id_destino] = nova_aresta;
         grafo[id_destino];  // Inicializa a entrada para garantir a presença no grafo
-
-        // Verificação de cada aresta lida
-        cout << "Aresta de " << vertice_origem << " para " << vertice_destino
-             << ", Custo: " << nova_aresta.custo
-             << ", Capacidade mínima: " << nova_aresta.capacidade_minima
-             << ", Capacidade máxima: " << nova_aresta.capacidade_maxima << endl;
     }
 
     // Executa o CPLEX
