@@ -2,8 +2,7 @@
 |Modelo PLI - Problema do Fluxo de Custo Mínimo               |
 |					      		                              |
 |					      		                              |
-| Implementado por Bárbara Pereira Medeiros dias e            |
-|                    Julia Luiza Ferreira Santos              |
+| Implementado por Bárbara Pereira Medeiros Dias             |
 +-----------------------------------------------------------+ */
 
 #include <bits/stdc++.h>
