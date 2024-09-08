@@ -14,11 +14,11 @@ ILOSTLBEGIN
 int n;  // Número de pessoas/tarefas
 vector<vector<int>> custos;  // Matriz de custos
 
-// Função que configura e resolve o modelo CPLEX para o problema da designação
+// Função que configura e resolve o modelo CPLEX
 void cplex() {
     IloEnv ambiente;  // Ambiente CPLEX
 
-    // Variáveis de decisão: x[i][j] = 1 se a pessoa i for atribuída à tarefa j
+    // Variáveis de decisão
     IloArray<IloBoolVarArray> x(ambiente, n);
     for (int i = 0; i < n; i++) {
         x[i] = IloBoolVarArray(ambiente, n);
@@ -55,56 +55,53 @@ void cplex() {
     }
 
     // Execução
-    IloCplex solver(modelo);
-
-    solver.setOut(ambiente.getNullStream());  // Desabilita a saída padrão do CPLEX
+    IloCplex solver(modelo);  // Configura o solver CPLEX
 
     time_t inicio, fim;
     string status_solucao;
 
     time(&inicio);
-    if (solver.solve()) {  // Executa a resolução do modelo e verifica se foi bem-sucedido
-        time(&fim);
+    solver.solve();  // Executa a resolução do modelo
+    time(&fim);
 
-        // Resultados
-        bool solucao_existe = true;
-        switch (solver.getStatus()) {
-            case IloAlgorithm::Optimal:
-                status_solucao = "Ótima";
-                break;
-            case IloAlgorithm::Feasible:
-                status_solucao = "Factível";
-                break;
-            default:
-                status_solucao = "Sem Solução";
-                solucao_existe = false;
-        }
+    // Resultados
+    bool solucao_existe = true;
+    switch (solver.getStatus()) {
+        case IloAlgorithm::Optimal:
+            status_solucao = "Ótima";
+            break;
+        case IloAlgorithm::Feasible:
+            status_solucao = "Factível";
+            break;
+        default:
+            status_solucao = "Sem Solução";
+            solucao_existe = false;
+    }
 
-        cout << endl << "Status da solução: " << status_solucao << endl << endl;
+    cout << endl << "Status da solução: " << status_solucao << endl << endl;
 
-        if (solucao_existe) {
-            // Valor da função objetivo
-            IloNum valor_objetivo = solver.getObjValue();
-            cout << "Valor da Função Objetivo (Custo Total): " << valor_objetivo << endl;
+    if (solucao_existe) {
+        // Valor da função objetivo
+        IloNum valor_objetivo = solver.getObjValue();
 
-            // Imprime os valores das variáveis de decisão
-            cout << "Designação (pessoa -> tarefa):" << endl;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (solver.getValue(x[i][j]) > 0.5) {  // Se a variável for 1 (binária)
-                        cout << "Pessoa " << i + 1 << " -> Tarefa " << char('A' + j) << endl;
-                    }
+        // Imprime os valores das variáveis de decisão
+        cout << "Designação (pessoa -> tarefa):" << endl;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (solver.getValue(x[i][j]) > 0.5) {  // Se a variável for 1 (binária)
+                    cout << "Pessoa " << i + 1 << " -> Tarefa " << char('A' + j) << endl;
                 }
             }
-
-            // Imprime o tempo de execução
-            cout << endl << "Tempo de execução: " << difftime(fim, inicio) << " segundos" << endl;
         }
-    } else {
-        cout << "Erro na resolução do modelo." << endl;
+        cout << "Função Objetivo Valor = " << valor_objetivo << endl;
+
+        std::cout << std::fixed;
+        std::cout << std::setprecision(6);
+        cout << "(" << difftime(fim, inicio) << " segundos)" << endl;
     }
 
     // Liberação de memória
+    modelo.end();
     ambiente.end();
 }
 

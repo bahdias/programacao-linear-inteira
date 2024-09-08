@@ -10,9 +10,7 @@ ILOSTLBEGIN
 
 // Estrutura para armazenar as informações de cada aresta
 typedef struct {
-    int custo;
-    int capacidade_minima;
-    int capacidade_maxima;
+    int custo, capacidade_minima, capacidade_maxima;
 } Aresta;
 
 // Variáveis globais
@@ -25,10 +23,9 @@ unordered_set<int> intermediarios;            // Conjunto de vértices intermedi
 
 // Função que define e resolve o problema usando o CPLEX
 void cplex() {
-    // Cria o ambiente do CPLEX
-    IloEnv ambiente;
+    IloEnv ambiente;  // Ambiente CPLEX
 
-    // Variáveis de decisão: "usado" indica se a aresta entre dois vértices foi usada
+    // Variáveis de decisão
     IloArray<IloBoolVarArray> usado(ambiente);
     for (int i = 0; i < num_vertices; i++) {
         usado.add(IloBoolVarArray(ambiente));  // Adiciona um vetor de variáveis booleanas para cada vértice
@@ -37,7 +34,7 @@ void cplex() {
         }
     }
 
-    // Define o modelo de otimização
+    // Modelo
     IloModel modelo(ambiente);
     IloExpr sum(ambiente);   // Expressão para a função objetivo
 
@@ -51,7 +48,7 @@ void cplex() {
     }
     modelo.add(IloMinimize(ambiente, sum));   // Define a minimização do custo total como objetivo
 
-    // Adiciona restrições de fluxo saindo da fonte e entrando no destino
+    // Restrições: Fluxo saindo da fonte e entrando no destino
     if (!fontes.empty() && !destinos.empty()) {
         int fonte = fontes.begin()->first;
         int destino = destinos.begin()->first;
@@ -75,7 +72,7 @@ void cplex() {
         cout << "Restrição de fluxo entrando no destino adicionada." << endl;
     }
 
-    // Restrição de conservação de fluxo para os intermediários
+    // Restrição:Conservação de fluxo para os intermediários
     for (int intermediario : intermediarios) {
         sum.clear();
         IloExpr sum2(ambiente);
@@ -97,7 +94,7 @@ void cplex() {
         cout << "Restrição de fluxo no intermediário " << rotulos_vertices[intermediario] << " adicionada." << endl;
     }
 
-    // Adiciona restrições de capacidade (se necessário)
+    // Restrições: Capacidade
     for (int i = 0; i < num_vertices; i++) {
         for (int j = 0; j < num_vertices; j++) {
             auto destino = grafo[i].find(j);
@@ -107,35 +104,35 @@ void cplex() {
         }
     }
 
-    // Inicializa o resolvedor do CPLEX
-    IloCplex solver(modelo);
+    // Execução
+    IloCplex solver(modelo);  // Configura o solver CPLEX
 
     time_t inicio, fim;
     string status_solucao;
 
-    time(&inicio);   // Marca o início da resolução
-    solver.solve();  // Resolve o problema
-    time(&fim);      // Marca o fim da resolução
+    time(&inicio);
+    solver.solve();  // Executa a resolução do modelo
+    time(&fim);
 
+    // Resultados
     bool solucao_existe = true;
-    // Verifica o status da solução
     switch (solver.getStatus()) {
         case IloAlgorithm::Optimal:
-            status_solucao = "Ótima";    // Solução ótima encontrada
+            status_solucao = "Ótima";
             break;
         case IloAlgorithm::Feasible:
-            status_solucao = "Factível"; // Solução factível encontrada
+            status_solucao = "Factível";
             break;
         default:
-            status_solucao = "Sem Solução";  // Nenhuma solução encontrada
+            status_solucao = "Sem Solução";
             solucao_existe = false;
     }
 
     cout << endl << "Status da solução: " << status_solucao << endl << endl;
 
     if (solucao_existe) {
-        // Imprime as arestas usadas no caminho mínimo
         IloNum valor_objetivo = solver.getObjValue();
+
         cout << "Arestas usadas no caminho mínimo: " << endl;
         for (auto vertice_origem : grafo) {
             for (auto vertice_destino : vertice_origem.second) {
@@ -148,8 +145,8 @@ void cplex() {
             }
         }
 
-        // Imprime o custo total do caminho mínimo
-        cout << endl << "Custo total do caminho = " << valor_objetivo << endl;
+        cout << endl << "Função Objetivo Valor = " << valor_objetivo << endl;
+        
         std::cout << std::fixed;
         std::cout << std::setprecision(6);
         cout << "(" << difftime(fim, inicio) << " segundos)" << endl;
@@ -157,7 +154,7 @@ void cplex() {
         cout << "Nenhuma solução encontrada." << endl;
     }
 
-    // Libera recursos
+    // Liberação de memória
     sum.end();
     modelo.end();
     ambiente.end();
@@ -170,16 +167,16 @@ int main() {
     // Lê os vértices (rótulos e tipo: origem, intermediário ou destino)
     string tipo_vertice;
     for (int i = 0; i < num_vertices; i++) {
-        cin >> rotulos_vertices[i];  // Lê o nome do vértice
-        ids_vertices[rotulos_vertices[i]] = i;  // Mapeia o nome do vértice para o ID
+        cin >> rotulos_vertices[i];
+        ids_vertices[rotulos_vertices[i]] = i;
 
-        cin >> tipo_vertice;  // Lê o tipo do vértice (origem, intermediário, destino)
+        cin >> tipo_vertice;
         if (tipo_vertice == "origem") {
-            fontes[i] = i;  // Marca como fonte
+            fontes[i] = i;
         } else if (tipo_vertice == "destino") {
-            destinos[i] = i;  // Marca como destino
+            destinos[i] = i;
         } else {
-            intermediarios.insert(i);  // Marca como intermediário
+            intermediarios.insert(i);
         }
     }
 
@@ -196,4 +193,5 @@ int main() {
 
     // Executa o CPLEX
     cplex();
+    return 0;
 }
