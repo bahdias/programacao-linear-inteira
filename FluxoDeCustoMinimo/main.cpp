@@ -30,11 +30,7 @@ unordered_set<int> intermediarios;            // Conjunto de vértices intermedi
 void cplex() {
     IloEnv ambiente;  // Ambiente CPLEX
 
-    /*  --------------------------------------------------
-     *  Variáveis de decisão -----------------------------
-     */
-
-    // Uma variável para cada possível aresta, mesmo que não exista
+    // Variáveis de decisão
     IloArray<IloNumVarArray> fluxo(ambiente);  // Matriz de variáveis de fluxo
     for (int i = 0; i < num_vertices; i++) {
         fluxo.add(IloNumVarArray(ambiente));  // Adiciona uma linha para cada vértice
@@ -43,9 +39,7 @@ void cplex() {
         }
     }
 
-    /*  ------------------------------------
-     *  Modelo -----------------------------
-     */
+    // Modelo
     IloModel modelo(ambiente);
     IloExpr sum(ambiente), sum2(ambiente);
 
@@ -122,9 +116,7 @@ void cplex() {
         }
     }
 
-    /*  --------------------------------------
-     *  Execução -----------------------------
-     */
+    // Execução
     IloCplex solver(modelo);  // Configura o solver CPLEX
 
     time_t inicio, fim;
@@ -134,10 +126,7 @@ void cplex() {
     solver.solve();  // Executa a resolução do modelo
     time(&fim);
 
-    /*  ----------------------------------------
-     *  Resultados -----------------------------
-     */
-
+    // Resultados
     bool solucao_existe = true;
     switch (solver.getStatus()) {
         case IloAlgorithm::Optimal:
@@ -173,9 +162,7 @@ void cplex() {
         cout << "(" << difftime(fim, inicio) << " segundos)" << endl;
     }
 
-    /*  -----------------------------------------
-     *  Liberação de memória --------------------
-     */
+    // Liberação de memória
     sum.end();
     sum2.end();
     modelo.end();
@@ -215,4 +202,5 @@ int main() {
 
     // Executa o CPLEX
     cplex();
+    return 0;
 }
